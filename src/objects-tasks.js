@@ -412,6 +412,7 @@ class CssSelectorBuilder {
   constructor() {
     this.value = '';
     this.elements = [];
+    this.order = 0;
   }
 
   checkElement(element) {
@@ -423,34 +424,49 @@ class CssSelectorBuilder {
     this.elements.push(element);
   }
 
+  checkOrder(order) {
+    if (this.order > order) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    }
+    this.order = order;
+  }
+
   element(value) {
     this.checkElement('element');
+    this.checkOrder(1);
     this.value += value;
     return this;
   }
 
   id(value) {
     this.checkElement('id');
+    this.checkOrder(2);
     this.value += `#${value}`;
     return this;
   }
 
   class(value) {
+    this.checkOrder(3);
     this.value += `.${value}`;
     return this;
   }
 
   attr(value) {
+    this.checkOrder(4);
     this.value += `[${value}]`;
     return this;
   }
 
   pseudoClass(value) {
+    this.checkOrder(5);
     this.value += `:${value}`;
     return this;
   }
 
   pseudoElement(value) {
+    this.checkOrder(6);
     this.checkElement('pseudoElement');
     this.value += `::${value}`;
     return this;
