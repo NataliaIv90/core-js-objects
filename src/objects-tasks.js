@@ -411,14 +411,26 @@ function group(array, keySelector, valueSelector) {
 class CssSelectorBuilder {
   constructor() {
     this.value = '';
+    this.elements = [];
+  }
+
+  checkElement(element) {
+    if (this.elements.includes(element)) {
+      throw new Error(
+        'Element, id and pseudo-element should not occur more then one time inside the selector'
+      );
+    }
+    this.elements.push(element);
   }
 
   element(value) {
+    this.checkElement('element');
     this.value += value;
     return this;
   }
 
   id(value) {
+    this.checkElement('id');
     this.value += `#${value}`;
     return this;
   }
@@ -439,6 +451,7 @@ class CssSelectorBuilder {
   }
 
   pseudoElement(value) {
+    this.checkElement('pseudoElement');
     this.value += `::${value}`;
     return this;
   }
