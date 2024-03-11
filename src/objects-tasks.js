@@ -408,34 +408,68 @@ function group(array, keySelector, valueSelector) {
  *  For more examples see unit tests.
  */
 
+class CssSelectorBuilder {
+  constructor() {
+    this.value = '';
+  }
+
+  element(value) {
+    this.value += value;
+    return this;
+  }
+
+  id(value) {
+    this.value += `#${value}`;
+    return this;
+  }
+
+  class(value) {
+    this.value += `.${value}`;
+    return this;
+  }
+
+  attr(value) {
+    this.value += `[${value}]`;
+    return this;
+  }
+
+  pseudoClass(value) {
+    this.value += `:${value}`;
+    return this;
+  }
+
+  pseudoElement(value) {
+    this.value += `::${value}`;
+    return this;
+  }
+
+  combine(selector1, combinator, selector2) {
+    this.value += `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    return this;
+  }
+
+  stringify() {
+    return this.value;
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
-  },
+  element: (value) => new CssSelectorBuilder().element(value),
 
-  id(/* value */) {
-    throw new Error('Not implemented');
-  },
+  id: (value) => new CssSelectorBuilder().id(value),
 
-  class(/* value */) {
-    throw new Error('Not implemented');
-  },
+  class: (value) => new CssSelectorBuilder().class(value),
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
-  },
+  attr: (value) => new CssSelectorBuilder().attr(value),
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
-  },
+  pseudoClass: (value) => new CssSelectorBuilder().pseudoClass(value),
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
-  },
+  pseudoElement: (value) => new CssSelectorBuilder().pseudoElement(value),
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
-  },
+  combine: (selector1, combinator, selector2) =>
+    new CssSelectorBuilder().combine(selector1, combinator, selector2),
+
+  stringify: () => new CssSelectorBuilder().stringify(),
 };
 
 module.exports = {
